@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Geometría Analítica: La Hipérbola Paso a Paso | Guía Interactiva UAT</title>
+  
+  <!-- Tipografía Poppins e Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Three.js & OrbitControls -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Barra de progreso de lectura superior -->
+  <div class="reading-progress-bar" id="readingProgress"></div>
+
+  <!-- ==================== HEADER ==================== -->
+  <header class="site-header" id="header">
+    <div class="header-container">
+      <a href="#hero" class="logo">
+        <div class="logo-icon">
+          <i class="fa-solid fa-infinity"></i>
+        </div>
+        <div class="logo-text">
+          <span class="logo-title">HIPÉRBOLA<span class="highlight">.LAB</span></span>
+          <span class="logo-subtitle">Geometría Analítica Didáctica</span>
+        </div>
+      </a>
+
+      <!-- Menú de navegación desktop -->
+      <nav class="nav-menu" id="navMenu">
+        <ul class="nav-list">
+          <li><a href="#hero" class="nav-link"><i class="fa-solid fa-cube"></i> Modelo 3D</a></li>
+          <li><a href="#intro" class="nav-link"><i class="fa-solid fa-shapes"></i> ¿Qué es?</a></li>
+          <li><a href="#origen" class="nav-link"><i class="fa-solid fa-crosshairs"></i> En el Origen</a></li>
+          <li><a href="#fuera-origen" class="nav-link"><i class="fa-solid fa-arrows-up-down-left-right"></i> Fuera del Origen</a></li>
+          <li><a href="#comparativa" class="nav-link"><i class="fa-solid fa-scale-balanced"></i> vs Elipse</a></li>
+          <li><a href="#aplicaciones" class="nav-link special-link"><i class="fa-solid fa-rocket"></i> En la Vida Real</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <button class="theme-toggle" id="themeToggle" title="Alternar Modo Claro / Oscuro" aria-label="Cambiar tema">
+          <i class="fa-solid fa-sun" id="themeIcon"></i>
+        </button>
+        <a href="#origen" class="btn btn-primary btn-sm">
+          <span>Probar Simulador</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </a>
+        <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== HERO SECTION (CON MODELO 3D INTEGRADO AL LADO) ==================== -->
+  <section class="hero-section" id="hero">
+    <div class="hero-bg-subtle"></div>
+    <div class="container hero-container">
+      
+      <!-- Columna Izquierda: Presentación y Explicación -->
+      <div class="hero-content">
+        <div class="badge-tag">
+          <span class="badge-dot"></span>
+          <span>Geometría Visual • Nivel UAT y Bachillerato</span>
+        </div>
+        <h1 class="hero-title">
+          La <span class="text-gradient">Hipérbola</span> explicada paso a paso.
+        </h1>
+        <p class="hero-description">
+          Aprende sin rodeos ni fórmulas memorizadas a la fuerza. Descubre cómo se generan sus dos ramas en el <strong>cono doble de Apolonio</strong> y domina su comportamiento tanto con <strong>centro en el origen (0,0)</strong> como <strong>desplazado en (h,k)</strong>.
+        </p>
+
+        <div class="hero-stats">
+          <div class="stat-card">
+            <span class="stat-number">2 Conos</span>
+            <span class="stat-label">Punta con punta</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number">|d₁ − d₂|</span>
+            <span class="stat-label">Resta constante</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number">c² = a² + b²</span>
+            <span class="stat-label">Focos exteriores</span>
+          </div>
+        </div>
+
+        <div class="hero-buttons">
+          <a href="#intro" class="btn btn-primary">
+            <span>Aprender Conceptos</span>
+            <i class="fa-solid fa-book-open"></i>
+          </a>
+          <a href="#origen" class="btn btn-outline">
+            <span>Simulador 2D</span>
+            <i class="fa-solid fa-sliders"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Columna Derecha: MODELO 3D REALISTA DE LOS 2 CONOS OPUESTOS POR EL ÁPICE -->
+      <div class="hero-visual">
+        <div class="model3d-card card-glass">
+          <div class="model3d-header">
+            <div class="model3d-status">
+              <span class="status-live"><i class="fa-solid fa-circle"></i> Corte Cónico en 3D</span>
+            </div>
+            <div class="model3d-actions-compact">
+              <button class="btn-icon" id="btnToggleAutoRotate" title="Pausar / Reanudar Auto-rotación">
+                <i class="fa-solid fa-play"></i>
+              </button>
+              <button class="btn-icon" id="btnResetCamera" title="Restablecer Vista">
+                <i class="fa-solid fa-rotate-left"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="model3d-canvas-wrap">
+            <div id="threejs-hero-container"></div>
+            
+            <!-- Indicador sutil de interacción -->
+            <div class="canvas-hint">
+              <i class="fa-solid fa-arrow-pointer"></i> Arrastra para girar 360° • Rueda para zoom
+            </div>
+          </div>
+
+          <!-- Barra de control del plano de corte -->
+          <div class="model3d-footer-ctrl">
+            <div class="plane-slider-group">
+              <label for="sliderPlaneOffset">
+                <span>Posición del plano de corte:</span>
+                <strong id="planeOffsetVal">0.9</strong>
+              </label>
+              <input type="range" id="sliderPlaneOffset" min="-1.8" max="1.8" step="0.05" value="0.9">
+            </div>
+            <p class="plane-note">
+              <i class="fa-solid fa-circle-info"></i> Dos conos tocándose en su vértice $(0,0,0)$. El plano vertical corta ambas hojas a la vez produciendo las <strong>dos ramas simétricas</strong>.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== SECCIÓN 1: INTRODUCCIÓN DIDÁCTICA ==================== -->
+  <section class="section" id="intro">
+    <div class="container">
+      <div class="section-header text-center">
+        <span class="section-tag"><i class="fa-solid fa-shapes"></i> Fundamentos Sin Rodeos</span>
+        <h2 class="section-title">¿Qué es exactamente una <span class="text-gradient">Hipérbola</span>?</h2>
+        <p class="section-subtitle">Imagina que la estás aprendiendo para explicársela a un amigo antes del examen.</p>
+      </div>
+
+      <div class="grid grid-2" style="margin-bottom: 2rem;">
+        <div class="card-glass">
+          <div class="icon-avatar">
+            <i class="fa-solid fa-magnet"></i>
+          </div>
+          <h3 class="card-title">La diferencia con la elipse</h3>
+          <p>
+            En la <strong>elipse</strong>, sumas las distancias a dos puntos fijos ($F_1$ y $F_2$) y obtienes una curva cerrada (un óvalo).
+          </p>
+          <p>
+            En la <strong>hipérbola</strong> haces exactamente lo contrario: <strong>restas las distancias</strong>. El resultado es el conjunto de puntos donde esa diferencia siempre es constante:
+          </p>
+          <div class="equation-highlight">
+            | d₁ − d₂ | = 2a
+          </div>
+          <p class="card-footer-tip">
+            <i class="fa-solid fa-circle-info"></i> Al restarse las distancias, los puntos no pueden cerrarse, escapando hacia el infinito en dos ramas opuestas y perfectamente simétricas.
+          </p>
+        </div>
+
+        <div class="card-glass">
+          <div class="icon-avatar icon-gold">
+            <i class="fa-solid fa-layer-group"></i>
+          </div>
+          <h3 class="card-title">Los 6 elementos esenciales</h3>
+          <ul class="clean-list">
+            <li>
+              <strong>Centro (C):</strong> El punto de simetría equidistante a todo. Puede estar en $(0,0)$ o en $(h,k)$.
+            </li>
+            <li>
+              <strong>Vértices (V₁ y V₂):</strong> Los puntos de inflexión donde las ramas dan la vuelta. Distancia entre ellos: <code>2a</code>.
+            </li>
+            <li>
+              <strong>Focos (F₁ y F₂):</strong> Los dos puntos directores interiores. Distancia entre ellos: <code>2c</code>.
+            </li>
+            <li>
+              <strong>Eje Transverso ($2a$):</strong> El segmento que une los dos vértices (el eje real de la hipérbola).
+            </li>
+            <li>
+              <strong>Eje Conjugado ($2b$):</strong> El ancho perpendicular que define qué tan abierta o angosta es la curva.
+            </li>
+            <li>
+              <strong>Asíntotas:</strong> Dos rectas diagonales guía que las ramas persiguen continuamente hacia el infinito sin tocarlas jamás.
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Banner de la relación pitagórica -->
+      <div class="theorem-banner">
+        <div class="theorem-badge"><i class="fa-solid fa-triangle-exclamation"></i> Relación Fundamental</div>
+        <h3>La Regla Pitagórica de la Hipérbola</h3>
+        <p>
+          Como los focos quedan más alejados que los vértices, la distancia $c$ es siempre la mayor de todas.
+        </p>
+        <div class="formula-large">
+          c² = a² + b² &nbsp;&nbsp;⟹&nbsp;&nbsp; c = √(a² + b²)
+        </div>
+        <p class="theorem-sub">
+          Excentricidad: <code>e = c / a</code> (siempre mayor a 1, a diferencia de la elipse donde es menor a 1).
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== SECCIÓN 2: CENTRO EN EL ORIGEN (0, 0) ==================== -->
+  <section class="section section-alt" id="origen">
+    <div class="container">
+      <div class="section-header text-center">
+        <span class="section-tag"><i class="fa-solid fa-crosshairs"></i> Tema 1</span>
+        <h2 class="section-title">Hipérbola con Centro en el <span class="text-gradient">Origen (0, 0)</span></h2>
+        <p class="section-subtitle">El caso canónico base: el centro de simetría coincide con el cruce de los ejes coordenados.</p>
+      </div>
+
+      <!-- Comparador Horizontal vs Vertical -->
+      <div class="grid grid-2" style="margin-bottom: 2rem;">
+        <div class="card-glass orientation-card active" id="card-h-origen">
+          <div class="card-badge">Abre hacia los lados (Horizontal)</div>
+          <h3>Eje focal sobre X</h3>
+          <div class="formula-box-sm">
+            <span class="formula-term pos">x² / a²</span>
+            <span>−</span>
+            <span class="formula-term neg">y² / b²</span>
+            <span>= 1</span>
+          </div>
+          <p class="rule-hint">
+            <i class="fa-solid fa-check"></i> <strong>Regla práctica:</strong> El término positivo es <code>x²</code>, por lo tanto la curva abre a izquierda y derecha.
+          </p>
+          <ul class="data-table">
+            <li><span>Centro:</span> <strong>(0, 0)</strong></li>
+            <li><span>Vértices:</span> <strong>(±a, 0)</strong></li>
+            <li><span>Focos:</span> <strong>(±c, 0)</strong></li>
+            <li><span>Asíntotas:</span> <strong>y = ± (b/a) · x</strong></li>
+          </ul>
+        </div>
+
+        <div class="card-glass orientation-card" id="card-v-origen">
+          <div class="card-badge">Abre arriba y abajo (Vertical)</div>
+          <h3>Eje focal sobre Y</h3>
+          <div class="formula-box-sm">
+            <span class="formula-term pos">y² / a²</span>
+            <span>−</span>
+            <span class="formula-term neg">x² / b²</span>
+            <span>= 1</span>
+          </div>
+          <p class="rule-hint">
+            <i class="fa-solid fa-check"></i> <strong>Regla práctica:</strong> El término positivo es <code>y²</code>, por lo tanto la curva abre hacia arriba y abajo.
+          </p>
+          <ul class="data-table">
+            <li><span>Centro:</span> <strong>(0, 0)</strong></li>
+            <li><span>Vértices:</span> <strong>(0, ±a)</strong></li>
+            <li><span>Focos:</span> <strong>(0, ±c)</strong></li>
+            <li><span>Asíntotas:</span> <strong>y = ± (a/b) · x</strong></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- SIMULADOR INTERACTIVO 1 -->
+      <div class="simulator-wrapper card-glass">
+        <div class="simulator-header">
+          <div class="sim-title">
+            <i class="fa-solid fa-sliders"></i>
+            <div>
+              <h4>Simulador #1 • Hipérbola en (0, 0)</h4>
+              <p>Modifica los semiejes y experimenta cómo varían las asíntotas y la excentricidad.</p>
+            </div>
+          </div>
+          <button class="btn btn-sm btn-outline" id="resetSim1">
+            <i class="fa-solid fa-rotate-left"></i> Restablecer
+          </button>
+        </div>
+
+        <div class="simulator-body grid grid-sim">
+          <!-- Controles del simulador -->
+          <div class="sim-controls">
+            <div class="control-group">
+              <label class="control-label">Orientación:</label>
+              <div class="toggle-switch-group">
+                <button class="toggle-btn active" id="btnOriH1" data-val="H">
+                  <i class="fa-solid fa-arrows-left-right"></i> Horizontal
+                </button>
+                <button class="toggle-btn" id="btnOriV1" data-val="V">
+                  <i class="fa-solid fa-arrows-up-down"></i> Vertical
+                </button>
+              </div>
+            </div>
+
+            <div class="control-slider">
+              <div class="slider-header">
+                <span>Semieje <strong>a</strong> (distancia a vértices):</span>
+                <span class="slider-value" id="valA1">3.0</span>
+              </div>
+              <input type="range" id="sliderA1" min="1" max="8" step="0.5" value="3">
+            </div>
+
+            <div class="control-slider">
+              <div class="slider-header">
+                <span>Semieje <strong>b</strong> (conjugado):</span>
+                <span class="slider-value" id="valB1">4.0</span>
+              </div>
+              <input type="range" id="sliderB1" min="1" max="8" step="0.5" value="4">
+            </div>
+
+            <!-- Ecuación en vivo -->
+            <div class="live-calc-box">
+              <span class="calc-tag">Ecuación Resultante</span>
+              <div class="live-eq" id="liveEquation1">x² / 9 − y² / 16 = 1</div>
+              <div class="live-breakdown" id="liveBreakdown1">
+                <div><span>Distancia focal c:</span> <strong id="calcC1">5.00</strong></div>
+                <div><span>Excentricidad e:</span> <strong id="calcE1">1.67</strong></div>
+                <div><span>Ecuación asíntotas:</span> <strong id="calcAsyn1">y = ± 1.33x</strong></div>
+                <div><span>Vértices:</span> <strong id="calcVert1">(±3.0, 0)</strong></div>
+              </div>
+            </div>
+
+            <div class="sim-toggles">
+              <label class="checkbox-label">
+                <input type="checkbox" id="chkBoxAux1" checked>
+                <span>Mostrar caja guía rectangular (2a × 2b)</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" id="chkAsyntotes1" checked>
+                <span>Mostrar líneas de asíntotas</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" id="chkPoints1" checked>
+                <span>Etiquetar Vértices y Focos</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Canvas 2D -->
+          <div class="sim-canvas-container">
+            <canvas id="canvasOrigen" width="600" height="500"></canvas>
+            <div class="canvas-legend">
+              <span class="leg-item"><span class="leg-color leg-curve"></span> Curva</span>
+              <span class="leg-item"><span class="leg-color leg-asyn"></span> Asíntotas</span>
+              <span class="leg-item"><span class="leg-color leg-box"></span> Caja guía</span>
+              <span class="leg-item"><span class="leg-color leg-focus"></span> Focos</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== SECCIÓN 3: FUERA DEL ORIGEN (h, k) ==================== -->
+  <section class="section" id="fuera-origen">
+    <div class="container">
+      <div class="section-header text-center">
+        <span class="section-tag"><i class="fa-solid fa-arrows-up-down-left-right"></i> Tema 2</span>
+        <h2 class="section-title">Hipérbola con Centro Fuera del <span class="text-gradient">Origen (h, k)</span></h2>
+        <p class="section-subtitle">Traslación en el plano cartesiano: exactamente la misma forma geométrica, solo desplazada.</p>
+      </div>
+
+      <div class="card-glass story-card" style="margin-bottom: 2rem;">
+        <div class="story-icon">
+          <i class="fa-solid fa-route"></i>
+        </div>
+        <div class="story-text">
+          <h3>La traslación de coordenadas explicada con sentido común</h3>
+          <p>
+            No hay fórmulas nuevas que aprender. Simplemente sustituyes $x$ por $(x - h)$ e $y$ por $(y - k)$:
+          </p>
+          <div class="tags-row">
+            <span class="tag-pill"><i class="fa-solid fa-arrow-right-arrow-left"></i> <strong>h:</strong> Desplaza el centro a lo largo de X</span>
+            <span class="tag-pill"><i class="fa-solid fa-arrow-up-arrow-down"></i> <strong>k:</strong> Desplaza el centro a lo largo de Y</span>
+          </div>
+          <div class="alert-box">
+            <i class="fa-solid fa-triangle-exclamation"></i> <strong>Cuidado con los signos:</strong> Si el centro está en <code>(3, -2)</code>, la ecuación queda <code>(x - 3)²</code> y <code>(y + 2)²</code> porque restar un negativo lo convierte en positivo.
+          </div>
+        </div>
+      </div>
+
+      <!-- Fórmulas canónicas desplazadas -->
+      <div class="grid grid-2" style="margin-bottom: 2rem;">
+        <div class="card-glass formula-col-card">
+          <span class="card-badge">Eje focal horizontal</span>
+          <h4>Horizontal con Centro en (h, k)</h4>
+          <div class="formula-box-sm">
+            <span class="formula-term pos">(x − h)² / a²</span>
+            <span>−</span>
+            <span class="formula-term neg">(y − k)² / b²</span>
+            <span>= 1</span>
+          </div>
+          <ul class="data-table">
+            <li><span>Centro:</span> <strong>(h, k)</strong></li>
+            <li><span>Vértices:</span> <strong>(h ± a, k)</strong></li>
+            <li><span>Focos:</span> <strong>(h ± c, k)</strong></li>
+            <li><span>Asíntotas:</span> <strong>y − k = ± (b/a)(x − h)</strong></li>
+          </ul>
+        </div>
+
+        <div class="card-glass formula-col-card">
+          <span class="card-badge">Eje focal vertical</span>
+          <h4>Vertical con Centro en (h, k)</h4>
+          <div class="formula-box-sm">
+            <span class="formula-term pos">(y − k)² / a²</span>
+            <span>−</span>
+            <span class="formula-term neg">(x − h)² / b²</span>
+            <span>= 1</span>
+          </div>
+          <ul class="data-table">
+            <li><span>Centro:</span> <strong>(h, k)</strong></li>
+            <li><span>Vértices:</span> <strong>(h, k ± a)</strong></li>
+            <li><span>Focos:</span> <strong>(h, k ± c)</strong></li>
+            <li><span>Asíntotas:</span> <strong>y − k = ± (a/b)(x − h)</strong></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- SIMULADOR INTERACTIVO 2 -->
+      <div class="simulator-wrapper card-glass">
+        <div class="simulator-header">
+          <div class="sim-title">
+            <i class="fa-solid fa-compass-drafting"></i>
+            <div>
+              <h4>Simulador #2 • Centro Desplazado (h, k)</h4>
+              <p>Mueve el centro y observa el recálculo analítico y su forma general en tiempo real.</p>
+            </div>
+          </div>
+          <button class="btn btn-sm btn-outline" id="resetSim2">
+            <i class="fa-solid fa-rotate-left"></i> Restablecer
+          </button>
+        </div>
+
+        <div class="simulator-body grid grid-sim">
+          <!-- Controles -->
+          <div class="sim-controls">
+            <div class="control-group">
+              <label class="control-label">Orientación:</label>
+              <div class="toggle-switch-group">
+                <button class="toggle-btn active" id="btnOriH2" data-val="H">
+                  <i class="fa-solid fa-arrows-left-right"></i> Horizontal
+                </button>
+                <button class="toggle-btn" id="btnOriV2" data-val="V">
+                  <i class="fa-solid fa-arrows-up-down"></i> Vertical
+                </button>
+              </div>
+            </div>
+
+            <div class="grid grid-2" style="gap: 0.8rem;">
+              <div class="control-slider">
+                <div class="slider-header">
+                  <span>Centro <strong>h</strong>:</span>
+                  <span class="slider-value" id="valH2">2</span>
+                </div>
+                <input type="range" id="sliderH2" min="-6" max="6" step="1" value="2">
+              </div>
+
+              <div class="control-slider">
+                <div class="slider-header">
+                  <span>Centro <strong>k</strong>:</span>
+                  <span class="slider-value" id="valK2">-1</span>
+                </div>
+                <input type="range" id="sliderK2" min="-6" max="6" step="1" value="-1">
+              </div>
+            </div>
+
+            <div class="grid grid-2" style="gap: 0.8rem;">
+              <div class="control-slider">
+                <div class="slider-header">
+                  <span>Semieje <strong>a</strong>:</span>
+                  <span class="slider-value" id="valA2">3.0</span>
+                </div>
+                <input type="range" id="sliderA2" min="1" max="6" step="0.5" value="3">
+              </div>
+
+              <div class="control-slider">
+                <div class="slider-header">
+                  <span>Semieje <strong>b</strong>:</span>
+                  <span class="slider-value" id="valB2">2.0</span>
+                </div>
+                <input type="range" id="sliderB2" min="1" max="6" step="0.5" value="2">
+              </div>
+            </div>
+
+            <!-- Ecuación viva -->
+            <div class="live-calc-box">
+              <span class="calc-tag">Ecuación Canónica</span>
+              <div class="live-eq" id="liveEquation2">(x − 2)² / 9 − (y + 1)² / 4 = 1</div>
+              <div class="live-breakdown" id="liveBreakdown2">
+                <div><span>Centro C(h, k):</span> <strong id="calcCenter2">(2, -1)</strong></div>
+                <div><span>Focos F:</span> <strong id="calcF2">(2±3.61, -1)</strong></div>
+                <div><span>Vértices V:</span> <strong id="calcV2">(2±3.0, -1)</strong></div>
+                <div><span>Forma General:</span> <strong id="calcGen2">4x² - 9y² - 16x - 18y - 29 = 0</strong></div>
+              </div>
+            </div>
+
+            <div class="sim-toggles">
+              <label class="checkbox-label">
+                <input type="checkbox" id="chkBoxAux2" checked>
+                <span>Mostrar caja guía en (h, k)</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" id="chkAsyntotes2" checked>
+                <span>Mostrar asíntotas trasladadas</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Canvas 2D -->
+          <div class="sim-canvas-container">
+            <canvas id="canvasFueraOrigen" width="600" height="500"></canvas>
+            <div class="canvas-legend">
+              <span class="leg-item"><span class="leg-color leg-center"></span> Centro C</span>
+              <span class="leg-item"><span class="leg-color leg-curve"></span> Curva</span>
+              <span class="leg-item"><span class="leg-color leg-asyn"></span> Asíntotas</span>
+              <span class="leg-item"><span class="leg-color leg-focus"></span> Focos</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== SECCIÓN 4: HIPÉRBOLA VS ELIPSE ==================== -->
+  <section class="section section-alt" id="comparativa">
+    <div class="container">
+      <div class="section-header text-center">
+        <span class="section-tag"><i class="fa-solid fa-scale-balanced"></i> Tabla Comparativa</span>
+        <h2 class="section-title">Diferencias clave: <span class="text-gradient">Hipérbola</span> vs <span class="text-gradient-alt">Elipse</span></h2>
+        <p class="section-subtitle">Evita las confusiones más comunes en exámenes y tareas de geometría analítica.</p>
+      </div>
+
+      <div class="table-responsive">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>Concepto</th>
+              <th><i class="fa-solid fa-infinity"></i> Hipérbola</th>
+              <th><i class="fa-solid fa-circle"></i> Elipse</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Signo entre términos</strong></td>
+              <td><span class="badge-pill badge-danger">Resta (−)</span> : <code>x²/a² − y²/b² = 1</code></td>
+              <td><span class="badge-pill badge-success">Suma (+)</span> : <code>x²/a² + y²/b² = 1</code></td>
+            </tr>
+            <tr>
+              <td><strong>Geometría</strong></td>
+              <td>Curva abierta infinita en dos ramas opuestas.</td>
+              <td>Curva cerrada y acotada (óvalo).</td>
+            </tr>
+            <tr>
+              <td><strong>Mayor parámetro</strong></td>
+              <td><strong>c es el mayor:</strong> <code>c² = a² + b²</code> (Focos exteriores).</td>
+              <td><strong>a es el mayor:</strong> <code>a² = b² + c²</code> (Focos interiores).</td>
+            </tr>
+            <tr>
+              <td><strong>Excentricidad (e = c / a)</strong></td>
+              <td><strong>e &gt; 1</strong> (Siempre mayor que la unidad).</td>
+              <td><strong>0 &lt; e &lt; 1</strong> (Siempre entre 0 y 1).</td>
+            </tr>
+            <tr>
+              <td><strong>Asíntotas</strong></td>
+              <td><strong>Tiene dos asíntotas</strong> que determinan su apertura.</td>
+              <td><strong>No tiene</strong> (es una superficie finita).</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== SECCIÓN 5: APLICACIONES EN LA VIDA REAL (ACORDEÓN Y MODELO 3D) ==================== -->
+  <section class="section" id="aplicaciones">
+    <div class="container">
+      <div class="section-header text-center">
+        <span class="section-tag"><i class="fa-solid fa-earth-americas"></i> Ingeniería, Espacio y Tecnología</span>
+        <h2 class="section-title">La Hipérbola en la <span class="text-gradient">Vida Real</span></h2>
+        <p class="section-subtitle">
+          No solo existe en el pizarrón. Descubre cómo la usan ingenieros civiles, astrofísicos y sistemas de navegación militar.
+        </p>
+      </div>
+
+      <div class="grid grid-app">
+        <!-- Columna Izquierda: Acordeón Interactivo con Ventanas Desplegables -->
+        <div class="accordion-container">
+          <div class="accordion-intro-box">
+            <i class="fa-solid fa-hand-pointer"></i>
+            <span>Toca las pestañas para desplegar los detalles de cada aplicación:</span>
+          </div>
+
+          <!-- Ítem 1 -->
+          <div class="accordion-item active" data-model="tower">
+            <button class="accordion-header" aria-expanded="true">
+              <div class="acc-title-group">
+                <div class="acc-icon"><i class="fa-solid fa-industry"></i></div>
+                <div class="acc-text">
+                  <h4>Torres de Enfriamiento Nuclear e Industrial</h4>
+                  <span class="acc-badge origin">Centro en el Origen (0, 0)</span>
+                </div>
+              </div>
+              <div class="acc-chevron">
+                <i class="fa-solid fa-chevron-down"></i>
+              </div>
+            </button>
+            <div class="accordion-content">
+              <div class="accordion-body">
+                <p>
+                  ¿Te has preguntado por qué las plantas nucleares tienen esa silueta característica de cintura estrecha y base ancha? Se llama <strong>hiperboloide de revolución</strong> y se obtiene rotando una hipérbola vertical alrededor de su eje central $(0,0)$.
+                </p>
+                <div class="acc-highlights">
+                  <div class="highlight-point">
+                    <i class="fa-solid fa-check"></i>
+                    <div>
+                      <strong>Efecto chimenea natural:</strong> El estrechamiento acelera la corriente ascendente de aire caliente sin necesidad de costosos ventiladores mecánicos.
+                    </div>
+                  </div>
+                  <div class="highlight-point">
+                    <i class="fa-solid fa-check"></i>
+                    <div>
+                      <strong>Construida con vigas rectas:</strong> Aunque parece curva, es una <em>superficie doblemente reglada</em>. ¡Se puede construir usando vigas de acero totalmente rectas cruzadas en diagonal, ahorrando millones en encofrados!
+                    </div>
+                  </div>
+                </div>
+                <div class="acc-formula-pill">
+                  <span>Ecuación 3D del Hiperboloide:</span>
+                  <code>x²/a² + z²/a² − y²/b² = 1</code>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ítem 2 -->
+          <div class="accordion-item" data-model="orbit">
+            <button class="accordion-header" aria-expanded="false">
+              <div class="acc-title-group">
+                <div class="acc-icon icon-blue"><i class="fa-solid fa-shuttle-space"></i></div>
+                <div class="acc-text">
+                  <h4>Trayectorias de Escape Espacial (Sondas Voyager)</h4>
+                  <span class="acc-badge shifted">Centro Fuera del Origen (h, k)</span>
+                </div>
+              </div>
+              <div class="acc-chevron">
+                <i class="fa-solid fa-chevron-down"></i>
+              </div>
+            </button>
+            <div class="accordion-content">
+              <div class="accordion-body">
+                <p>
+                  Cuando un cohete orbita la Tierra en una trayectoria cerrada, describe una elipse ($e < 1$). Pero cuando la NASA envió las sondas <strong>Voyager 1 y 2</strong> a salir del sistema solar, alcanzaron la <em>velocidad de escape</em>.
+                </p>
+                <div class="acc-highlights">
+                  <div class="highlight-point">
+                    <i class="fa-solid fa-check"></i>
+                    <div>
+                      <strong>Órbita abierta e hiperbólica ($e > 1$):</strong> Al superar la gravedad del Sol o de los planetas gigantes, la trayectoria es una hipérbola abierta donde el planeta se ubica en uno de los focos $(h, k)$.
+                    </div>
+                  </div>
+                  <div class="highlight-point">
+                    <i class="fa-solid fa-check"></i>
+                    <div>
+                      <strong>Asistencia gravitacional:</strong> La nave entra por una asíntota, pasa cerca del planeta en su periapsis (vértice) y sale disparada hacia el espacio interestelar por la otra asíntota con mayor velocidad.
+                    </div>
+                  </div>
+                </div>
+                <div class="acc-formula-pill">
+                  <span>Coordenadas del Foco Gravitatorio:</span>
+                  <code>Foco = (h ± c, k) con e = c/a > 1</code>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ítem 3 -->
+          <div class="accordion-item">
+            <button class="accordion-header" aria-expanded="false">
+              <div class="acc-title-group">
+                <div class="acc-icon icon-cyan"><i class="fa-solid fa-satellite-dish"></i></div>
+                <div class="acc-text">
+                  <h4>Navegación LORAN y Principio del GPS</h4>
+                  <span class="acc-badge shifted">Centro Fuera del Origen (h, k)</span>
+                </div>
+              </div>
+              <div class="acc-chevron">
+                <i class="fa-solid fa-chevron-down"></i>
+              </div>
+            </button>
+            <div class="accordion-content">
+              <div class="accordion-body">
+                <p>
+                  Antes de que existieran satélites, los barcos y aviones militares navegaban usando el sistema <strong>LORAN (Long Range Navigation)</strong>, que funciona bajo la pura definición geométrica de la hipérbola.
+                </p>
+                <div class="acc-highlights">
+                  <div class="highlight-point">
+                    <i class="fa-solid fa-check"></i>
+                    <div>
+                      <strong>Diferencia de tiempos = Distancia fija:</strong> Dos estaciones transmisoras ubicadas en $(x_1, y_1)$ y $(x_2, y_2)$ emiten señales sincronizadas. La diferencia de tiempo en que el barco recibe ambas señales define una resta fija de distancias $|d_1 - d_2| = 2a$.
+                    </div>
+                  </div>
+                  <div class="highlight-point">
+                    <i class="fa-solid fa-check"></i>
+                    <div>
+                      <strong>Intersección de hipérbolas:</strong> El barco sabe que está sobre una hipérbola específica. Al captar una tercera estación, se genera una segunda hipérbola desplazada: <em>¡donde se cruzan ambas curvas está la posición exacta!</em>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ítem 4 -->
+          <div class="accordion-item">
+            <button class="accordion-header" aria-expanded="false">
+              <div class="acc-title-group">
+                <div class="acc-icon icon-gold"><i class="fa-solid fa-eye"></i></div>
+                <div class="acc-text">
+                  <h4>Telescopios Reflectores y Óptica Cassegrain</h4>
+                  <span class="acc-badge origin">Centro en el Origen (0, 0)</span>
+                </div>
+              </div>
+              <div class="acc-chevron">
+                <i class="fa-solid fa-chevron-down"></i>
+              </div>
+            </button>
+            <div class="accordion-content">
+              <div class="accordion-body">
+                <p>
+                  El telescopio espacial <strong>Hubble</strong> y los grandes observatorios astronómicos utilizan espejos hiperbólicos gracias a su asombrosa propiedad óptica de reflexión:
+                </p>
+                <div class="acc-highlights">
+                  <div class="highlight-point">
+                    <i class="fa-solid fa-check"></i>
+                    <div>
+                      <strong>Propiedad reflectora de los focos:</strong> Cualquier rayo de luz que apunte hacia uno de los focos de una hipérbola se refleja directamente hacia el otro foco.
+                    </div>
+                  </div>
+                  <div class="highlight-point">
+                    <i class="fa-solid fa-check"></i>
+                    <div>
+                      <strong>Telescopios compactos:</strong> Esto permite plegar una trayectoria de luz de 10 metros dentro de un tubo de solo 2 metros de largo, eliminando aberraciones esféricas y permitiendo captar galaxias lejanas con total nitidez.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ítem 5 -->
+          <div class="accordion-item">
+            <button class="accordion-header" aria-expanded="false">
+              <div class="acc-title-group">
+                <div class="acc-icon icon-red"><i class="fa-solid fa-plane-up"></i></div>
+                <div class="acc-text">
+                  <h4>El Estampido Sónico (Cono de Mach)</h4>
+                  <span class="acc-badge shifted">Centro Fuera del Origen (h, k)</span>
+                </div>
+              </div>
+              <div class="acc-chevron">
+                <i class="fa-solid fa-chevron-down"></i>
+              </div>
+            </button>
+            <div class="accordion-content">
+              <div class="accordion-body">
+                <p>
+                  Cuando un avión caza militar rompe la barrera del sonido (vuelo supersónico), comprime el aire generando un <strong>cono tridimensional de ondas de choque</strong> (Cono de Mach) detrás de él.
+                </p>
+                <div class="acc-highlights">
+                  <div class="highlight-point">
+                    <i class="fa-solid fa-check"></i>
+                    <div>
+                      <strong>La huella en el suelo es una hipérbola:</strong> Como el suelo es un plano horizontal y el avión vuela a velocidad constante a cierta altitud $(h, k)$, la intersección del cono con la tierra es una <strong>hipérbola</strong>.
+                    </div>
+                  </div>
+                  <div class="highlight-point">
+                    <i class="fa-solid fa-check"></i>
+                    <div>
+                      Todas las personas que estén paradas a lo largo de esa línea curva hiperbólica escucharán el estruendo <em>"Boom"</em> exactamente al mismo tiempo.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Columna Derecha: Modelo 3D Interactivo de la Aplicación -->
+        <div class="app-visual-wrapper">
+          <div class="app-model3d-card card-glass">
+            <div class="app-model3d-header">
+              <div class="app-model3d-status">
+                <span class="status-live"><i class="fa-solid fa-circle"></i> Modelo 3D de la Estructura</span>
+              </div>
+              <!-- Selector de modelo 3D -->
+              <div class="model-switch-pills">
+                <button class="model-pill active" id="btnModelTower" title="Ver Torre Hiperboloide">
+                  <i class="fa-solid fa-industry"></i> Torre
+                </button>
+                <button class="model-pill" id="btnModelOrbit" title="Ver Trayectoria Espacial">
+                  <i class="fa-solid fa-shuttle-space"></i> Escape Espacial
+                </button>
+              </div>
+            </div>
+
+            <!-- Viewport 3D -->
+            <div class="app-model3d-viewport">
+              <div id="threejs-app-container"></div>
+              <div class="app-model-badge" id="appModelBadge">
+                <i class="fa-solid fa-cubes"></i> Hiperboloide de Revolución (1 Hoja)
+              </div>
+              <div class="canvas-hint">
+                <i class="fa-solid fa-arrow-pointer"></i> Gira 360° con el ratón
+              </div>
+            </div>
+
+            <div class="app-model3d-footer">
+              <div class="app-footer-info">
+                <h5 id="appModelTitle">Torre de Enfriamiento Hiperboloide</h5>
+                <p id="appModelDesc">
+                  Generada al revolucionar la hipérbola vertical <code>x²/a² − y²/b² = 1</code> alrededor del eje Y. La línea dorada resalta la curvatura hiperbólica generatriz.
+                </p>
+              </div>
+              <div class="app-footer-actions">
+                <button class="btn btn-sm btn-outline" id="btnToggleAppRotate">
+                  <i class="fa-solid fa-pause"></i> Rotación
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="site-footer">
+    <div class="footer-top">
+      <div class="container footer-grid">
+        <div class="footer-brand">
+          <div class="logo">
+            <div class="logo-icon"><i class="fa-solid fa-infinity"></i></div>
+            <div class="logo-text">
+              <span class="logo-title">HIPÉRBOLA<span class="highlight">.LAB</span></span>
+              <span class="logo-subtitle">Geometría Analítica Didáctica</span>
+            </div>
+          </div>
+          <p class="footer-desc">
+            Diseñado para estudiantes que necesitan comprender visual e intuitivamente las cónicas sin memorizaciones innecesarias.
+          </p>
+          <div class="footer-socials">
+            <a href="#" aria-label="Github"><i class="fa-brands fa-github"></i></a>
+            <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+            <a href="#" aria-label="Discord"><i class="fa-brands fa-discord"></i></a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4 class="footer-col-title">Secciones</h4>
+          <ul class="footer-links">
+            <li><a href="#hero"><i class="fa-solid fa-chevron-right"></i> Modelo 3D de Conos</a></li>
+            <li><a href="#intro"><i class="fa-solid fa-chevron-right"></i> Fundamentos de la curva</a></li>
+            <li><a href="#origen"><i class="fa-solid fa-chevron-right"></i> Centro en el origen (0,0)</a></li>
+            <li><a href="#fuera-origen"><i class="fa-solid fa-chevron-right"></i> Fuera del origen (h,k)</a></li>
+            <li><a href="#comparativa"><i class="fa-solid fa-chevron-right"></i> Hipérbola vs Elipse</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4 class="footer-col-title">Formulario Exprés</h4>
+          <ul class="footer-links">
+            <li><a href="#origen"><i class="fa-solid fa-chevron-right"></i> <code>c = √(a² + b²)</code></a></li>
+            <li><a href="#origen"><i class="fa-solid fa-chevron-right"></i> Asíntotas: <code>y = ± (b/a)x</code></a></li>
+            <li><a href="#fuera-origen"><i class="fa-solid fa-chevron-right"></i> Canónica: <code>(x-h)²/a² − (y-k)²/b² = 1</code></a></li>
+            <li><a href="#comparativa"><i class="fa-solid fa-chevron-right"></i> Excentricidad: <code>e &gt; 1</code></a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4 class="footer-col-title">Nivel UAT</h4>
+          <p class="footer-text-sm">
+            Herramienta pedagógica creada con HTML, CSS, Canvas 2D y Three.js para la comprensión geométrica en preparatoria y universidad.
+          </p>
+          <div class="footer-status-pill">
+            <span class="status-pulse"></span>
+            <span>Acceso Libre 2026</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="container footer-bottom-flex">
+        <p>&copy; 2026 <strong>Hipérbola.lab</strong> — Geometría Analítica Interactiva.</p>
+        <div class="footer-bottom-links">
+          <a href="#">Privacidad</a>
+          <span>•</span>
+          <a href="#">Condiciones</a>
+          <span>•</span>
+          <a href="#hero">Ir arriba <i class="fa-solid fa-arrow-up"></i></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
